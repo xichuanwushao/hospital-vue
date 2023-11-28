@@ -74,7 +74,44 @@ export default {
     },
 
     methods: {
-        
+        login: function() {
+            let that = this;
+            if (!isUsername(that.username)) {
+                ElMessage({
+                    message: '用户名格式不正确',
+                    type: 'error',
+                    duration: 1200
+                });
+            } else if (!isPassword(that.password)) {
+                ElMessage({
+                    message: '密码格式不正确',
+                    type: 'error',
+                    duration: 1200
+                });
+            } else {
+                let data = { username: that.username, password: that.password };
+                //发送登陆请求
+                that.$http('/mis_user/login', 'POST', data, true, function(resp) {
+                    if (resp.result) {
+                        //在浏览器的storage中存储用户权限列表
+                        let permissions = resp.permissions;
+                        //取出Token令牌，保存到storage中
+                        let token = resp.token;
+                        localStorage.setItem('permissions', permissions);
+                        localStorage.setItem('token', token);
+                        //让路由跳转页面，这里的Home是home.vue页面的名字
+                        router.push({ name: 'Home' });
+                    } else {
+                        ElMessage({
+                            message: '登陆失败',
+                            type: 'error',
+                            duration: 1200
+                        });
+                    }
+                });
+            }
+        },
+
     }
 };
 </script>
