@@ -309,7 +309,7 @@ export default {
 				this.mainTabsActiveName = tab.name;
 			}
 		},
-		logout: function() {
+		logout: function()  {
 			let that = this;
 			that.$http('/mis_user/logout', 'GET', null, true, function(resp) {
 				localStorage.removeItem('permissions');
@@ -361,8 +361,9 @@ export default {
 			this.mainTabs = [];
 			this.menuActiveName = '';
 			this.$router.push({ name: 'Home' });
-		}
-	},
+		},
+
+    },
 	mounted: function() {
 		let that = this;
 		that.resetDocumentClientHeight();
