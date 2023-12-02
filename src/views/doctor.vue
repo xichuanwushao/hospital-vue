@@ -343,8 +343,32 @@ export default {
             }
             this.dataList = [];
             this.loadDataList();
-        }
-    },
+        },
+        expand: function( row,expandedRows){
+            let that = this;
+            if (expandedRows.length > 0) {
+                that.expands = [];
+                that. expands.push( row .id);
+                let data = {
+                    id: row .id
+                };
+                that.$http('/doctor/searchContent' , 'POST' , data,false,function(resp){
+                    that.content.id = row.id;
+                    that.content.photo = `${that.$minioUrl}${resp.photo}?random=${Math.random()}`
+                    that.content.pid = resp.pid;
+                    that.content.birthday = resp.birthday;
+                    that.content.uuid = resp.uuid;
+                    that.content.hiredate = resp.hiredate;
+                    that. content. email = resp. email;
+                    that. content. remark = resp.remark;
+                    that.content.tag = resp.tag;
+                    that.content. address = resp.address;
+                    that.content.description = resp.description;
+                    });
+                } else {
+                    that. expands = [];
+                }
+    },},
     created: function() {
         this.loadMedicalDeptList();
         this.loadDataList();
