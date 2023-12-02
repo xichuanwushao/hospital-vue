@@ -318,6 +318,20 @@ export default {
             this.pageIndex = val;
             this.loadDataList();
         },
+        searchHandle: function() {
+            this.$refs['dataForm'].validate(valid => {
+                if (valid) {
+                    this.$refs['dataForm'].clearValidate();
+                    if (this.pageIndex != 1) {
+                        this.pageIndex = 1;
+                    }
+                    this.loadDataList();
+                } else {
+                    return false;
+                }
+            });
+        },
+
     },
     created: function() {
         this.loadMedicalDeptList();
