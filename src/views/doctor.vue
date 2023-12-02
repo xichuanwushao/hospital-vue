@@ -303,10 +303,25 @@ export default {
                 that.dataListLoading = false;
             });
         },
-
+        loadMedicalDeptList: function() {
+            let that = this;
+            that.$http('/medical/dept/searchAll', 'GET', {}, true, function(resp) {
+                that.medicalDeptList = resp.result;
+            });
+        },
+        sizeChangeHandle(val) {
+            this.pageSize = val;
+            this.pageIndex = 1;
+            this.loadDataList();
+        },
+        currentChangeHandle(val) {
+            this.pageIndex = val;
+            this.loadDataList();
+        },
     },
     created: function() {
-
+        this.loadMedicalDeptList();
+        this.loadDataList();
     }
 };
 </script>
