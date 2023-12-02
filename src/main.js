@@ -91,11 +91,11 @@ app.config.globalProperties.$echarts = echarts //设置全局变量$echarts
 
 
 //后端项目的URL根路径
-let baseUrl = "http://192.168.3.150:8092/hospital-api"
+let baseUrl = "http://127.0.0.1:8092/hospital-api"
 app.config.globalProperties.$baseUrl = baseUrl //设置全局变量$baseUrl
 
 //Minio服务器地址
-let minioUrl = "http://192.168.3.151:9002/hospital"
+let minioUrl = "http://172.16.6.0:9002/hospital"
 app.config.globalProperties.$minioUrl = minioUrl
 
 
