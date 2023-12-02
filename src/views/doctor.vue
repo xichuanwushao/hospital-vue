@@ -273,10 +273,40 @@ export default {
         };
     },
     methods: {
-        
+        loadDataList: function() {
+            let that = this;
+            that.dataListLoading = true;
+            let json = { 在职: 1, 离职: 2, 退休: 3 };
+            let data = {
+                page: that.pageIndex,
+                length: that.pageSize,
+                name: that.dataForm.name == '' ? null : that.dataForm.name,
+                deptId: that.dataForm.deptId == '' ? null : that.dataForm.deptId,
+                degree: that.dataForm.degree == '' ? null : that.dataForm.degree,
+                job: that.dataForm.job == '' ? null : that.dataForm.job,
+                recommended: that.dataForm.recommended == '' ? null : that.dataForm.recommended,
+                status: json[that.dataForm.status],
+                order: that.dataForm.order
+            };
+            that.$http('/doctor/searchByPage', 'POST', data, true, function(resp) {
+                let result = resp.result;
+                let temp = {
+                    '1': '在职',
+                    '2': '离职',
+                    '3': '退休'
+                };
+                for (let one of result.list) {
+                    one.status = temp[one.status + ''];
+                }
+                that.dataList = result.list;
+                that.totalCount = result.totalCount;
+                that.dataListLoading = false;
+            });
+        },
+
     },
     created: function() {
-        
+
     }
 };
 </script>
