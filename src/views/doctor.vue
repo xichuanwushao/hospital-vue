@@ -331,7 +331,19 @@ export default {
                 }
             });
         },
-
+        orderHandle: function(param) {
+            let prop = param.prop;
+            let order = param.order;
+            if (order == 'ascending') {
+                this.dataForm.order = 'ASC';
+            } else if (order == 'descending') {
+                this.dataForm.order = 'DESC';
+            } else {
+                return;
+            }
+            this.dataList = [];
+            this.loadDataList();
+        }
     },
     created: function() {
         this.loadMedicalDeptList();
