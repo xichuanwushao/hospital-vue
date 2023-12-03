@@ -378,7 +378,15 @@ export default {
              type: 'error',
              duration: 1200
         });
-        }
+        },
+        addHandle: function() {
+            //使用$nextTick函数可以保证init函数中的代码都能执行完，不会强制结束
+            this.$nextTick(() =>{
+           //调用doctor-add-or-update.vue页面的init函数
+                this.$refs.addOrUpdate.init();
+            });
+        },
+
      },
     created: function() {
         this.loadMedicalDeptList();
