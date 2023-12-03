@@ -368,7 +368,18 @@ export default {
                 } else {
                     that. expands = [];
                 }
-    },},
+        },
+        updatePhotoSuccess: function() {
+            this.content.photo = `${this.$minioUrl}/doctor/doctor-${this.content.id}.jpg?random=${Math.random()}`;
+        },
+        updatePhotoError: function() {
+            ElMessage({
+             message: '文件上传失败',
+             type: 'error',
+             duration: 1200
+        });
+        }
+     },
     created: function() {
         this.loadMedicalDeptList();
         this.loadDataList();
