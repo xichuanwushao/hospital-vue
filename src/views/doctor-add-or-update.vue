@@ -298,6 +298,24 @@ export default {
 
             });
         },
+        inputTagHandle: function() {
+            if (this.newTag != null && this.newTag != '') {
+                if (this.dataForm.tag.includes(this.newTag)) {
+                    ElMessage({
+                        message: '不能添加重复标签',
+                        type: 'warning',
+                        duration: 1200
+                    });
+                } else {
+                    this.dataForm.tag.push(this.newTag);
+                    this.newTag = null;
+                     }
+                }
+            },
+        closeTagHandle: function(tag) {
+            let i = this.dataForm.tag.indexOf(tag);
+            this.dataForm.tag.splice(i, 1);
+        },
     }
 };
 </script>
