@@ -316,6 +316,50 @@ export default {
             let i = this.dataForm.tag.indexOf(tag);
             this.dataForm.tag.splice(i, 1);
         },
+
+        dataFormSubmit: function() {
+            let that = this;
+            //前端表单验证
+            that.$refs['dataForm'].validate(function(valid) {
+                if (valid) {
+                    that.dataForm.deptSubId = that.dataForm.deptSub[1];
+                    let json = {
+                        在职: 1,
+                        离职: 2,
+                        退休: 3
+                    };
+                    let data = {
+                        id: that.dataForm.id,
+                        name: that.dataForm.name,
+                        pid: that.dataForm.pid,
+                        sex: that.dataForm.sex,
+                        birthday: that.dataForm.birthday,
+                        school: that.dataForm.school,
+                        degree: that.dataForm.degree,
+                        tel: that.dataForm.tel,
+                        address: that.dataForm.address,
+                        email: that.dataForm.email,
+                        job: that.dataForm.job,
+                        remark: that.dataForm.remark,
+                        description: that.dataForm.description,
+                        hiredate: dayjs(that.dataForm.hiredate).format('YYYY-MM-DD'),
+                        tag: that.dataForm.tag,
+                        recommended: that.dataForm.recommended == '推荐' ? 1 : 2,
+                        status: json[that.dataForm.status],
+                        subId: that.dataForm.deptSubId
+                    };
+                    that.$http(`/doctor/${!that.dataForm.id ? 'insert' : 'update'}` , 'POST' , data,true,function(
+                resp) {
+                        ElMessage({
+                            message: '操作成功',
+                            type: 'success'
+                        });
+                        that.visible = false;
+                        that.$emit('refreshDataList');
+                    });
+                }
+            });
+        }
     }
 };
 </script>
