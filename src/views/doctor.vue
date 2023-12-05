@@ -386,6 +386,11 @@ export default {
                 this.$refs.addOrUpdate.init();
             });
         },
+        updateHandle: function(id) {
+            this.$nextTick(() => {
+                this.$refs.addOrUpdate.init(id);
+            });
+        },
 
      },
     created: function() {
