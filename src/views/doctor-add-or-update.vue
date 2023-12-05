@@ -296,6 +296,36 @@ export default {
                 //加载二级列表数据
                 that.loadDeptAndSub();
 
+
+                //下方是新添加的内容
+                if (that.dataForm.id) {
+                    that.$http('/doctor/searchById', 'POST', { id: id }, true, function(resp) {
+                        let json = {
+                            '1': '在职',
+                            '2': '离职',
+                            '3': '退休'
+                        };
+                        that.dataForm.name = resp.name;
+                        that.dataForm.pid = resp.pid;
+                        that.dataForm.sex = resp.sex;
+                        that.dataForm. birthday = resp.birthday;
+                        that.dataForm.school = resp.school;
+                        that.dataForm.degree = resp.degree;
+                        that.dataForm.tel = resp.tel;
+                        that.dataForm.address = resp.address;
+                        that.dataForm.email = resp.email;
+                        that.dataForm.job = resp.job;
+                        that.dataForm.remark = resp.remark;
+                        that.dataForm.description = resp.description;
+                        that.dataForm.hiredate = resp.hiredate;
+                        that.dataForm.recommended = resp.recommended ? '推荐' : '不推荐';
+                        that.dataForm.tag = resp.tag;
+                        that.dataForm.status = json[resp.status + ''];
+                        that.dataForm.deptSub = [resp.deptName, resp.deptSubId];
+                    });
+                }
+
+
             });
         },
         inputTagHandle: function() {
