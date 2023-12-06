@@ -187,9 +187,50 @@ export default {
             this.$nextTick(() => {
                 this.$refs.addOrUpdate.init(id);
             });
-        }
+        },
+        selectionChangeHandle: function(val) {
+            this.dataListSelections = val;
+        },
 
+        selectable: function(row, index) {
+            if (row.subs > 0) {
+
+                return false;
+            }
+            return true;
+        },
+        deleteHandle: function(id) {
+            let that = this;
+            let ids = id ? [id] : that.dataListSelections.map(item => {
+                return item.id;
+            });
+            if (ids.length == 0) {
+                ElMessage({
+                    message: '没有选中记录',
+                    type: 'warning',
+                    duration: 1200
+                });
+            } else {
+                ElMessageBox.confirm('确定要删除选中的记录？', '提示信息', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.$http('/medical/dept/deleteByIds', 'POST', { ids: ids }, true, function(resp) {
+                    ElMessage({
+                          message: '操作成功',
+                          type: 'success',
+                          duration: 1200,
+                          onClose: () => {
+                              that.loadDataList();
+                    }
+                });
+                });
+            });
+        }
     },
+
+},
 
     created: function() {
         this.loadDataList();
