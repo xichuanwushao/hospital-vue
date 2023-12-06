@@ -178,7 +178,13 @@ export default {
                 }
             });
         },
+        addHandle: function() {
+            this.$nextTick(() => {
+                this.$refs.addOrUpdate.init();
+            });
+        },
     },
+
     created: function() {
         this.loadDataList();
     }
