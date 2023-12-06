@@ -84,6 +84,15 @@ export default {
             that.$nextTick(() => {
                 that.$refs['dataForm'].resetFields();
                 //TODO 查询科室用于修改业务
+                if (id) {
+                    that.$http('/medical/dept/searchById', 'POST', { id: id }, true, function( resp) {
+
+                    that.dataForm.name = resp.name;
+                    that.dataForm.outpatient = resp.outpatient + '';
+                    that.dataForm.recommended = resp.recommended + '';
+                    that.dataForm.description = resp.description;
+                });
+            }
             });
         },
         dataFormSubmit: function() {
