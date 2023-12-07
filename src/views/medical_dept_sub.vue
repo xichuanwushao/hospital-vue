@@ -199,6 +199,33 @@ export default {
             });
         },
 
+        updateHandle: function(id) {
+            this.$nextTick(() => {
+                this.$refs.addOrUpdate.init(id);
+            });
+        },
+
+    dataFormSubmit: function() {
+        let that = this;
+        this.$refs['dataForm'].validate(valid => {
+            if (valid) {
+                that.$http(
+                    `/medical/dept/sub/${!that.dataForm.id ? 'insert' : 'update'}`,
+                    'POST',
+                    that.dataForm,
+                    true,
+                    function(resp) {
+                        ElMessage({
+                            message: '操作成功',
+                            type: 'success'
+                        });
+                        that.visible = false;
+                        that.$emit('refreshDataList');
+                    }
+                );
+            }
+        });
+    }
 
     },
     created: function() {

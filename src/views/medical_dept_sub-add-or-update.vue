@@ -73,6 +73,17 @@ export default {
                 that.deptList = result;
             });
         },
+        // init: function(id) {
+        //     let that = this;
+        //     that.reset();
+        //     that.dataForm.id = id || 0;
+        //     that.visible = true;
+        //     that.$nextTick(() => {
+        //         that.$refs['dataForm'].resetFields();
+        //         that.loadDeptList();
+        //         //TODO 查询诊室数据
+        //     });
+        // },
         init: function(id) {
             let that = this;
             that.reset();
@@ -81,7 +92,14 @@ export default {
             that.$nextTick(() => {
                 that.$refs['dataForm'].resetFields();
                 that.loadDeptList();
-                //TODO 查询诊室数据
+                //这里是新添加的信息
+                if (id) {
+                    that.$http('/medical/dept/sub/searchById', 'POST', { id: id }, true, function(resp) {
+                        that.dataForm. name = resp.name;
+                        that.dataForm.deptId = resp.deptId;
+                        that.dataForm.location = resp.location;
+                    });
+                }
             });
         },
         dataFormSubmit: function() {
