@@ -57,7 +57,54 @@ export default {
     },
 
     methods: {
-        
+        reset: function() {
+            let dataForm = {
+                id: null,
+                name: null,
+                deptId: null,
+                location: null
+            };
+            this.dataForm = dataForm;
+        },
+        loadDeptList: function() {
+            let that = this;
+            that.$http('/medical/dept/searchAll', 'GET', {}, true, function(resp) {
+                let result = resp.result;
+                that.deptList = result;
+            });
+        },
+        init: function(id) {
+            let that = this;
+            that.reset();
+            that.dataForm.id = id || 0;
+            that.visible = true;
+            that.$nextTick(() => {
+                that.$refs['dataForm'].resetFields();
+                that.loadDeptList();
+                //TODO 查询诊室数据
+            });
+        },
+        dataFormSubmit: function() {
+            let that = this;
+            this.$refs['dataForm'].validate(valid => {
+                if (valid) {
+                    that.$http(
+                        `/medical/dept/sub/${!that.dataForm.id ? 'insert' : 'update'}`,
+                        'POST',
+                        that.dataForm,
+                        true,
+                        function(resp) {
+                            ElMessage({
+                                message: '操作成功',
+                                type: 'success'
+                            });
+                            that.visible = false;
+                            that.$emit('refreshDataList');
+                        }
+                    );
+                }
+            });
+        }
     }
 };
 </script>
