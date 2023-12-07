@@ -141,10 +141,63 @@ export default {
         };
     },
     methods: {
-        
+        loadDataList: function() {
+            let that = this;
+            that.dataListLoading = true;
+            let data = {
+                name: that.dataForm.name == '' ? null : that.dataForm.name,
+                deptId: that.dataForm.deptId == '' ? null : that.dataForm.deptId,
+                order: that.dataForm.order,
+                page: that.pageIndex,
+                length: that.pageSize
+            };
+            that.$http('/medical/dept/sub/searchByPage', 'POST', data, true, function(resp) {
+                let result = resp.result;
+                that.dataList = result.list;
+                that.totalCount = result.totalCount;
+                that.dataListLoading = false;
+            });
+        },
+        loadDeptList: function() {
+            let that = this;
+            that.$http('/medical/dept/searchAll', 'GET', {}, true, function(resp) {
+                let result = resp.result;
+                that.deptList = result;
+            });
+        },
+        sizeChangeHandle: function(val) {
+            this.pageSize = val;
+            this.pageIndex = 1;
+            this.loadDataList();
+        },
+        currentChangeHandle: function(val) {
+            this.pageIndex = val;
+            this.loadDataList();
+        },
+        searchHandle: function() {
+            this.$refs['dataForm'].validate(valid => {
+                if (valid) {
+                    this.$refs['dataForm'].clearValidate();
+                    if (this.dataForm.name == '') {
+                        this.dataForm.name = null;
+                    }
+                    if (this.dataForm.deptId == '') {
+                        this.dataForm.deptId = null;
+                    }
+                    if (this.pageIndex != 1) {
+                        this.pageIndex = 1;
+                    }
+                    this.loadDataList();
+                } else {
+                    return false;
+                }
+            });
+        },
+
     },
     created: function() {
-        
+        this.loadDeptList();
+        this.loadDataList();
     }
 };
 </script>
