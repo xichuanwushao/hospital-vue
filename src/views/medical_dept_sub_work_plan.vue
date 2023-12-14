@@ -158,11 +158,54 @@ export default {
 		};
 	},
 	methods: {
-		
+        loadDeptList: function() {
+            let that = this;
+            that.$http('/medical/dept/searchAll', 'GET', {}, true, function(resp) {
+                let result = resp.result;
+                that.deptList = result;
+            });
+        },
+        loadDataList: function() {
+            let that = this;
+            let data = {
+                deptId: that.dataForm.deptId,
+                doctorName: that.dataForm.doctorName,
+                startDate: that.dataForm.startDate,
+                endDate: that.dataForm.endDate
+            };
+            that.$http('/medical/dept/sub/work_plan/searchWorkPlanInRange', 'POST', data, true, function( resp) {
+
+                that.dataList = resp.result;
+            that.dateList = resp.dateList;
+         });
+        },
+        searchHandle: function() {
+            this.$refs['dataForm'].validate(valid => {
+                if (valid) {
+                    this.$refs['dataForm'].clearValidate();
+                    if (this.dataForm.doctorName == '') {
+                        this.dataForm.doctorName = null;
+                    }
+                    if (this.dataForm.deptId == '') {
+                        this.dataForm.deptId = null;
+                    }
+                    //以起始日期计算7天之后的结束日期
+                    this.dataForm.endDate = dayjs(this.dataForm.startDate)
+                        .add(7, 'day')
+                        .format('YYYY-MM-DD');
+                    //查询出诊计划
+                    this.loadDataList();
+                } else {
+                    return false;
+                }
+            });
+        },
 	},
-	created: function() {
-		
-	}
+    created: function() {
+        this.loadDeptList();
+        this.loadDataList();
+    }
+
 };
 </script>
 
