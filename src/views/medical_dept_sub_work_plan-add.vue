@@ -110,8 +110,63 @@ export default {
 		};
 	},
 	methods: {
-		
-	}
+        loadDeptAndSub: function() {
+            let that = this;
+            that.$http('/medical/dept/searchDeptAndSub', 'GET', {}, false, function(resp) {
+                let result = resp.result;
+                let dept = [];
+                for (let one in result) {
+                    let array = [];
+                    for (let sub of result[one]) {
+                        array.push({
+                            value: sub.subId,
+                            label: sub.subName
+                        });
+                    }
+                    dept.push({
+                        value: one,
+                        label: one,
+                        children: array
+                    });
+                }
+                that.dept = dept;
+            });
+        },
+        reset: function() {
+            this.checkAll = false; //全选框默认不选中
+            this.checkedSlot = []; //每个时间段取消选中
+            let dataForm = {
+                deptSub: null,
+                deptSubId: null,
+                doctorId: null,
+                date: new dayjs().format('YYYY-MM-DD'),
+                slots: [],
+                slotMaximum: 3
+            };
+            this.dataForm = dataForm;
+        },
+        init: function() {
+            let that = this;
+            that.reset();
+            that.visible = true;
+            that.$nextTick(() => {
+                that.$refs['dataForm'].resetFields();
+                that.loadDeptAndSub();
+            });
+        },
+        deptSubChangeHandle: function(e) {
+            let that = this;
+            that.dataForm.deptSubId = e[1];
+            let data = {
+                deptSubId: that.dataForm.deptSubId
+            };
+            that.$http('/doctor/searchByDeptSubId', 'POST', data, false, function(resp) {
+                that.doctorList = resp.result;
+                that.dataForm.doctorId = null;
+            });
+        },
+
+    }
 };
 </script>
 

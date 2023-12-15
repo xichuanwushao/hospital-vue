@@ -200,7 +200,13 @@ export default {
                 }
             });
         },
-	},
+        addHandle: function() {
+            this.$nextTick(() => {
+                this.$refs.add.init();
+            });
+        },
+
+    },
     created: function() {
         this.loadDeptList();
         this.loadDataList();
