@@ -177,6 +177,12 @@ export default {
                 }
             });
         },
+        addHandle: function() {
+            this.$nextTick(() => {
+                //因为是添加新出诊计划，不需要向弹窗页面传递workPlanId去查找已有的出诊计划
+                this.$refs.addOrUpdate.init(null, this.dataForm.deptSubId, this.dataForm.date);
+            });
+        },
     },
     mounted: function() {
 

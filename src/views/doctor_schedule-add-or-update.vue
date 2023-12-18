@@ -92,7 +92,99 @@ export default {
         };
     },
     methods: {
-        
+        loadDoctorList: function() {
+            let that = this;
+            let data = {
+                deptSubId: that.dataForm.deptSubId
+            };
+            that.$http('/doctor/searchByDeptSubId', 'POST', data, true, function(resp) {
+                that.doctorList = resp.result;
+            });
+        },
+        reset: function() {
+            this.checkAll = false;
+            this.checkedSlot = [];
+            this.oldSlots = [];
+            let dataForm = {
+                deptSubId: null,
+                doctorId: null,
+                date: new dayjs().format('YYYY-MM-DD'),
+                slots: [],
+                slotMaximum: 3
+            };
+            this.dataForm = dataForm;
+        },
+        init: function(workPlanId, deptSubId, date) {
+            let that = this;
+            that.reset();
+            that.dataForm.workPlanId = workPlanId
+            that.dataForm.deptSubId = deptSubId;
+            that.dataForm.date = date;
+            that.visible = true;
+            that.$nextTick(() => {
+                that.$refs['dataForm'].resetFields();
+                that.loadDoctorList();
+                if (workPlanId != null) {
+                    //TODO 加载出诊计划
+                }
+            });
+        },
+        checkAllChangeHandle: function(val) {
+            this.checkedSlot = val ? this.slotList : [];
+        },
+        analyseCheckBoxDisable: function(slot) {
+        },
+        dataFormSubmit: function() {
+            let that = this;
+            that.$refs['dataForm'].validate(function(valid) {
+                if (valid) {
+                    if (that.checkedSlot.length == 0) {
+                        ElMessage({
+                            message: '出诊时间段没有选择',
+                            type: 'warning'
+                        });
+                        return;
+                    }
+                    //新增数据
+                    if (that.dataForm.workPlanId == null) {
+                        //把选中的时段转换成具体编号
+                        that.dataForm.slots.length = 0;
+                        for (let one of that.checkedSlot) {
+                            let index = that.slotList.indexOf(one) + 1;
+                            that.dataForm.slots.push(index);
+                        }
+                        let data = {
+                            deptSubId: that.dataForm.deptSubId,
+                            doctorId: that.dataForm.doctorId,
+
+                            date: that.dataForm.date,
+                            slotMaximum: that.dataForm.slotMaximum,
+                            totalMaximum: that.checkedSlot.length * that.dataForm.slotMaximum,
+                            slots: that.dataForm.slots
+                        };
+                        that.$http('/medical/dept/sub/work_plan/insert', 'POST', data, true, function(resp) {
+                        let result = resp.result;
+                        if (result == '') {
+                            ElMessage({
+                                message: '操作成功',
+                                type: 'success',
+                                duration: 1200
+                            });
+                            that.visible = false;
+                            that.$emit('refreshDataList');
+                        } else {
+                            ElMessage({
+                                message: result,
+                                type: 'warning',
+                                duration: 1200
+                            });
+                        }
+                    });
+                }
+                //TODO 修改数据
+            }
+        });
+}
     }
 };
 </script>
