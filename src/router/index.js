@@ -129,7 +129,15 @@ const routes = [{
 					isTab: true
 				}
 			},
-
+			{
+				path: '/doctor_schedule/:deptName/:deptSubId/:date',
+				name: 'DoctorSchedule',
+				component: DoctorSchedule,
+				meta: {
+					title: '医生出诊表',
+					isTab: true
+				}
+			},
 
 		]
 	},
@@ -141,7 +149,17 @@ const routes = [{
 	{
 		path: '/:pathMatch(.*)*',
 		redirect: "/404"
-	}
+	},
+	// {
+	// 	path: '/doctor_schedule/:deptName/:deptSubId/:date',
+	// 	name: 'DoctorSchedule',
+	// 	component: DoctorSchedule,
+	// 	meta: {
+	// 		title: '医生出诊表',
+	// 		isTab: true
+	// 	}
+	// },
+
 ]
 
 const router = createRouter({

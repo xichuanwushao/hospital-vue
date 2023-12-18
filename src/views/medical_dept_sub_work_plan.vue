@@ -205,12 +205,18 @@ export default {
                 this.$refs.add.init();
             });
         },
-
+        viewWorkPlanHandle: function(deptName, deptSubId, date) {
+            this.$router.push({
+                name: 'DoctorSchedule',
+                params: { deptName: deptName, deptSubId: deptSubId, date: date }
+            });
+        }
     },
     created: function() {
         this.loadDeptList();
         this.loadDataList();
-    }
+    },
+
 
 };
 </script>
