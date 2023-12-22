@@ -183,6 +183,11 @@ export default {
                 this.$refs.addOrUpdate.init(null, this.dataForm.deptSubId, this.dataForm.date);
             });
         },
+        updateHandle: function(workPlanId) {
+            this.$nextTick(() => {
+                this.$refs.addOrUpdate.init(workPlanId, this.dataForm.deptSubId, this.dataForm.date);
+            });
+        }
     },
     mounted: function() {
 

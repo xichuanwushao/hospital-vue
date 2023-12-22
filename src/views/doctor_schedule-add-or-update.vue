@@ -117,7 +117,7 @@ export default {
         init: function(workPlanId, deptSubId, date) {
             let that = this;
             that.reset();
-            that.dataForm.workPlanId = workPlanId
+            that.dataForm.workPlanId = workPlanId;
             that.dataForm.deptSubId = deptSubId;
             that.dataForm.date = date;
             that.visible = true;
@@ -125,15 +125,35 @@ export default {
                 that.$refs['dataForm'].resetFields();
                 that.loadDoctorList();
                 if (workPlanId != null) {
-                    //TODO 加载出诊计划
-                }
-            });
+                    //这里是新添加的代码
+                    let data = {
+                        workPlanId: workPlanId
+                    };
+                    that.$http('/doctor/work_plan/schedule/searchByWorkPlanId', 'POST', data, true,  function(resp) {
+                    let result = resp.result;
+                    that.dataForm.doctorId = result.doctorId;
+                    that.dataForm.slotMaximum = result.maximum;
+                    that.oldSlots = result.slots;
+                    for (let one of result.slots) {
+                        let slot = that.slotList[one.slot - 1];
+                        that.checkedSlot.push(slot);
+                    }
+                });
+            }
+        });
         },
         checkAllChangeHandle: function(val) {
             this.checkedSlot = val ? this.slotList : [];
         },
         analyseCheckBoxDisable: function(slot) {
+            let temp = this.oldSlots.find(function(one) {
+                //筛选某个时段的实际挂号患者数量是否大于0
+                return one.slot == slot && one.num > 0;
+            });
+            //禁用患者挂号数量大于0的时间段复选框
+            return typeof temp != 'undefined';
         },
+
         dataFormSubmit: function() {
             let that = this;
             that.$refs['dataForm'].validate(function(valid) {
@@ -184,7 +204,9 @@ export default {
                 //TODO 修改数据
             }
         });
-}
+},
+
+
     }
 };
 </script>
