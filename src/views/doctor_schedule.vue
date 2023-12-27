@@ -187,7 +187,27 @@ export default {
             this.$nextTick(() => {
                 this.$refs.addOrUpdate.init(workPlanId, this.dataForm.deptSubId, this.dataForm.date);
             });
-        }
+        },
+        deleteHandle: function(workPlanId) {
+            let that = this;
+            that.$confirm('是否删除该条出诊日程?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let data = {
+                    workPlanId: workPlanId
+                };
+                that.$http('/medical/dept/sub/work_plan/deleteWorkPlan', 'POST', data, true, function(resp) {
+                ElMessage({
+                    message: '删除成功',
+                    type: 'success',
+                    duration: 1200
+                });
+                that.searchHandle();
+            });
+        });
+}
     },
     mounted: function() {
 
