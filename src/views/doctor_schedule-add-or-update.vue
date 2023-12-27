@@ -201,10 +201,73 @@ export default {
                         }
                     });
                 }
-                //TODO 修改数据
+
+                    //这里是新添加的代码
+                    else {
+                        that.dataForm.slots.length = 0;
+                        //把选中的时间段转换成编号
+                        for (let one of that.checkedSlot) {
+                            let index = that.slotList.indexOf(one) + 1;
+                            that.dataForm.slots.push(index);
+                        }
+                        let array = [];
+                        //用新的时段与老的时段比较，哪些时段是新增的选中时段
+                        for (let one of that.dataForm.slots) {
+                            let temp = that.oldSlots.find(function(old) {
+                                return old.slot == one;
+                            });
+                            //判断是不是新增的时段
+                            if (typeof temp == 'undefined') {
+                                array.push({
+                                    scheduleId: null,
+                                    slot: one,
+                                    maximum: that.dataForm.slotMaximum,
+                                    operate: 'insert'
+                                });
+                            }
+                        }
+                        //用老的时段与新的时段比较，哪些时段是要删除的
+                        for (let old of that.oldSlots) {
+                            let temp = that.dataForm.slots.find(function(one) {
+                                return old.slot == one;
+                            });
+                            //判断是不是删除的时段
+                            if (typeof temp == 'undefined') {
+                                array.push({
+                                    scheduleId: old.scheduleId,
+                                    slot: old.slot,
+                                    maximum: that.dataForm.slotMaximum,
+                                    operate: 'delete'
+                                });
+                            }
+                        }
+                        //如果既没有新增时段也没有取消时段，就弹出提示信息，没必要发起修改请求
+                        if (array.length == 0) {
+                            ElMessage({
+                                message: '请改动出诊日程',
+                                type: 'warning',
+                                duration: 1200
+                            });
+                            return;
+                        }
+                        let data = {
+                            workPlanId: that.dataForm.workPlanId,
+                            maximum: that.checkedSlot.length * that.dataForm.slotMaximum,
+                            slots: array
+                        };
+                        that.$http('/doctor/work_plan/schedule/updateSchedule', 'POST', data, true, function(resp) {
+                        ElMessage({
+                            message: '操作成功',
+                            type: 'success'
+
+                    });
+                        that.visible = false;
+                        that.$emit('refreshDataList');
+                    });
+                }
             }
         });
-},
+        },
 
 
     }
